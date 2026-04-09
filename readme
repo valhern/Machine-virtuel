@@ -1,4 +1,4 @@
-## 🖥️ Fonctionnement d’une machine virtuelle DHCP et DNS
+# 🖥️ Fonctionnement d’une machine virtuelle DHCP et DNS
 
 Une machine virtuelle configurée en **serveur DHCP** et **serveur DNS** joue un rôle central dans un réseau local. Elle automatise l’attribution des adresses IP et assure la résolution des noms de domaine, permettant aux postes clients de communiquer efficacement sans configuration manuelle.  
 
