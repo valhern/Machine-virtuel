@@ -1,1 +1,114 @@
+## 🖥️ Fonctionnement d’une machine virtuelle DHCP et DNS
 
+Une machine virtuelle configurée en **serveur DHCP** et **serveur DNS** joue un rôle central dans un réseau local. Elle automatise l’attribution des adresses IP et assure la résolution des noms de domaine, permettant aux postes clients de communiquer efficacement sans configuration manuelle.  
+
+---
+
+## 1. Rôle et fonctionnement du serveur DHCP
+
+Le **DHCP (Dynamic Host Configuration Protocol)** est un protocole qui attribue automatiquement aux machines du réseau :
+
+- une **adresse IP**
+- un **masque de sous-réseau**
+- une **passerelle par défaut**
+- un ou plusieurs **serveurs DNS**
+- une **durée de bail** (temps pendant lequel l’adresse IP est réservée)
+
+### 🔄 Le processus DORA (Discover – Offer – Request – Acknowledge)
+
+Lorsqu’un poste client démarre et n’a pas d’adresse IP, il suit un échange standardisé appelé **DORA** :
+
+1. **Discover**  
+   Le client envoie un message **DHCPDISCOVER** en broadcast pour signaler qu’il cherche une adresse IP. 
+
+2. **Offer**  
+   Le serveur DHCP répond avec une **DHCPOFFER**, contenant une adresse IP disponible et les paramètres réseau. 
+
+3. **Request**  
+   Le client choisit une offre (souvent la première reçue) et envoie un **DHCPREQUEST** pour confirmer son choix. 
+
+4. **Acknowledge**  
+   Le serveur valide l’attribution en envoyant un **DHCPACK**, finalisant la configuration IP du client. 
+
+### 🎯 Avantages du DHCP
+
+- Évite les erreurs de configuration manuelle  
+- Centralise la gestion des adresses IP  
+- S’adapte aux réseaux dynamiques  
+- Permet une administration plus rapide et fiable 
+
+---
+
+## 2. Rôle et fonctionnement du serveur DNS
+
+Le **DNS (Domain Name System)** est un service qui traduit les **noms de domaine** (lisibles par l’humain) en **adresses IP** (utilisées par les machines).  
+Exemple :  
+`www.google.com` → `142.250.74.14`
+
+Selon IBM, le DNS “convertit les noms de domaine lisibles en adresses IP numériques pour les ordinateurs”. 
+
+### 🔧 Fonctionnement général du DNS
+
+Lorsqu’un client veut accéder à un site ou à une ressource réseau :
+
+1. Il interroge le serveur DNS configuré (souvent fourni par DHCP).
+2. Le serveur DNS vérifie :
+   - sa **zone locale** (enregistrements internes)
+   - son **cache**
+   - ou interroge d’autres serveurs DNS si nécessaire
+3. Il renvoie l’adresse IP correspondante au client.
+
+### 📌 Types d’enregistrements DNS courants
+
+- **A** : nom → adresse IPv4  
+- **AAAA** : nom → adresse IPv6  
+- **CNAME** : alias vers un autre nom  
+- **MX** : serveur de messagerie  
+- **PTR** : résolution inverse (IP → nom)
+
+---
+
+## 3. Intégration DHCP + DNS sur une même machine virtuelle
+
+Sur une machine virtuelle, combiner DHCP et DNS permet une gestion réseau cohérente et automatisée.
+
+### 🔗 Comment les deux services interagissent ?
+
+- Le **DHCP attribue l’adresse IP** aux clients.
+- Il peut **mettre à jour automatiquement le DNS** (DNS dynamique) :
+  - ajout d’un enregistrement A pour le client
+  - ajout d’un enregistrement PTR pour la résolution inverse
+- Le client peut ensuite être joint par son **nom**, pas seulement par son IP.
+
+### 🧩 Avantages de cette combinaison
+
+- Gestion centralisée du réseau  
+- Mise à jour automatique des noms et adresses  
+- Réduction des conflits IP  
+- Simplification de l’administration  
+- Meilleure cohérence entre les postes et les services réseau
+
+---
+
+## 4. Fonctionnement dans une machine virtuelle
+
+Dans un environnement virtualisé (VirtualBox, VMware, Hyper-V…) :
+
+- La VM est connectée à un **réseau interne**, **NAT**, ou **bridge** selon le besoin.
+- Elle joue le rôle de **serveur central** pour les autres VMs ou postes physiques.
+- Les clients obtiennent automatiquement :
+  - leur configuration IP via DHCP  
+  - la résolution des noms via DNS  
+
+La VM doit disposer :
+
+- d’une **adresse IP fixe**  
+- d’un **service DHCP configuré** (plage d’adresses, bail, options)  
+- d’un **service DNS configuré** (zones, enregistrements, transferts)
+
+---
+
+## 🧾 Conclusion
+
+Une machine virtuelle configurée en serveur **DHCP + DNS** constitue le cœur d’un réseau local bien organisé.  
+Le DHCP automatise l’attribution des paramètres réseau, tandis que le DNS assure la traduction des noms en adresses IP. Ensemble, ils permettent une communication fluide, fiable et centralisée entre les machines du réseau.
